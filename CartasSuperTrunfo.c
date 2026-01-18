@@ -7,16 +7,17 @@
  
 
 struct cartas { //variaveis usando o comando struct que serve pra juntar as informaçoes ao invez de separa-las
-    char pais[50];
     char estado;
     char cidade[50];
-    int populacao;
+    long long unsigned int populacao;
     float area;
     float pib;
     int pontosturisticos;
     char codigo[5];
     float densidade;
     float pibpercapita;
+    long long unsigned int poder;
+
 };
 
 void entradados(struct cartas carta[2]){ // função para a entrada dos dados 
@@ -40,7 +41,7 @@ void entradados(struct cartas carta[2]){ // função para a entrada dos dados
       carta[indice].cidade[strcspn(carta[indice].cidade, "\n")] = '\0'; // Remove o caractere de nova linha lido pelo fgets
 
       printf("Qual a população da cidade?: \n");
-      scanf("%d", &carta[indice].populacao);
+      scanf("%llu", &carta[indice].populacao);
 
       getchar(); // Limpa o buffer do teclado
 
@@ -67,13 +68,16 @@ void entradados(struct cartas carta[2]){ // função para a entrada dos dados
 
 void calculos(struct cartas carta[2]){ //função para fazer os cálculos necessários
      
-  for(int k = 0; k < 2; k++) { 
+    for(int k = 0; k < 2; k++) { 
 
-    //calculo da densidade populacional
-    carta[k].densidade = carta[k].populacao / carta[k].area;
+      //calculo da densidade populacional
+      carta[k].densidade = (float)carta[k].populacao / carta[k].area;
 
-    //calculo do pib per capita
-    carta[k].pibpercapita = carta[k].pib / carta[k].populacao;
+     //calculo do pib per capita
+      carta[k].pibpercapita = (float)carta[k].pib / carta[k].populacao;
+
+      // calcula o poder total da carta
+      carta[k].poder = carta[k].pib + carta[k].area + carta[k].pibpercapita + carta[k].pontosturisticos + carta[k].densidade / 1;
   }
 }
  
@@ -84,25 +88,44 @@ void saidadados(struct cartas carta[2]){ //chama a função para mostrar os dado
 
   for(int k = 0; k < 2; k++) { 
 
-  printf("Estado: %c \n", carta[k].estado);  
-  printf("Código: %s \n", carta[k].codigo);
-  printf("Cidade: %s \n", carta[k].cidade);
-  printf("População: %d \n", carta[k].populacao);
-  printf("Área: %.2f KM² \n", carta[k].area);
-  printf("PIB: %.2f \n", carta[k].pib);
-  printf("Pontos Turísticos: %d \n", carta[k].pontosturisticos);
-  printf("Densidade Populacional é : %.2f \n", carta[k].densidade);
-  printf("Pib per capta é: %.2f \n", carta[k].pibpercapita);
-  printf("-------------------------\n");
+   printf("Estado: %c \n", carta[k].estado);  
+   printf("Código: %s \n", carta[k].codigo);
+   printf("Cidade: %s \n", carta[k].cidade);
+   printf("População: %llu \n", carta[k].populacao);
+   printf("Área: %.2f KM² \n", carta[k].area);
+   printf("PIB: %.2f \n", carta[k].pib);
+   printf("Pontos Turísticos: %d \n", carta[k].pontosturisticos);
+   printf("Densidade Populacional é : %.2f \n", carta[k].densidade);
+   printf("Pib per capta é: %.2f \n", carta[k].pibpercapita);
+   printf("o nivel de poder total é: %llu \n", carta[k].poder);
+   printf("-------------------------\n");  
  }
-  
 }
+
+
+ void comparar(struct cartas carta[2]){
+  
+   if (carta[0].poder > carta[1].poder){
+    printf("A carta 1 tem mais poder que a carta 2! Carta 1 Venceu!!!!");
+
+  }
+  else if (carta[0].poder < carta[1].poder)
+  { 
+    printf("A carta 2 tem mais poder que a carta 1! Carta 2 Venceu!!!!");
+  }
+  else{
+    printf("Empatou!!!");     
+  }
+ }
+
+
 
 int main(){  
     struct cartas carta[2];
     entradados(carta);
     calculos(carta);
     saidadados(carta);
+    comparar(carta);
     return 0;
 };
 
